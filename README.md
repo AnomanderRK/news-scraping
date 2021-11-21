@@ -13,7 +13,7 @@ python scraper.py
 ````
 
 ## Dependencies
-- lxml -> Look for xpath expressions
+- lxml -> Look for **[xpath](https://devhints.io/xpath)** expressions
 - requests -> Retrieve information from different 
 
 ### Requirement
