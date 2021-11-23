@@ -14,7 +14,7 @@ python scraper.py
 
 ## Dependencies
 - lxml -> Look for **[xpath](https://devhints.io/xpath)** expressions
-- requests -> Retrieve information from different 
+- requests -> Retrieve information from different pages
 
 ### Requirement
 I included the [requirements.txt](requirements.txt) so you can install all the needed packages
