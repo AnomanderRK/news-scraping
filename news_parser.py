@@ -21,6 +21,18 @@ class NewsParser(ABC):
         """Get news"""
 
 
+class ElUniversalParser(NewsParser):
+    """Read news from el universal news"""
+    def __init__(self):
+        pass
+
+    def parse_home(self) -> List[str]:
+        ...
+
+    def parse_news(self) -> List[News]:
+        ...
+
+
 class XPathParser(NewsParser):
     HOME_URL = 'https://www.larepublica.co/'
 
