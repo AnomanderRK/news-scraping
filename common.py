@@ -5,12 +5,6 @@ from typing import List
 
 
 class Config:
-    """Singleton config loader"""
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Config, cls).__new__(cls)
-        return cls.instance
-
     def __init__(self, config_path: str = 'config.yaml'):
         """Load configuration from yaml"""
         self.config_path: str = config_path
@@ -22,7 +16,3 @@ class Config:
         """Get sites from configuration"""
         return list(self.config['news_sites'].keys())
 
-
-# TODO: Delete - testing
-config = Config()
-print(config.sites)
