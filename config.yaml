@@ -1,5 +1,9 @@
 news_sites:
   eluniversal:
-    url: https://www.eluniversal.com.mx/
+    url: https://www.eluniversal.com.mx
+    queries:
+      homepage_article_links = '.titulo '
   elpais:
-    url: https://www.elpais.com
+    url: https://www.elpais.com/mexico
+    queries:
+      hompage_article_links = '.c_t'
