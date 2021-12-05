@@ -1,9 +1,14 @@
 news_sites:
   eluniversal:
-    url: https://www.eluniversal.com.mx
+    parser: ElUniversalParser
+    url: https://www.eluniversal.com
     queries:
-      homepage_article_links = '.titulo '
-  elpais:
-    url: https://www.elpais.com/mexico
-    queries:
-      hompage_article_links = '.c_t'
+      homepage_article_links: '.title '
+      news_title: '.title '
+      news_summary: '.sum '
+      news_body: '.note-text '
+#  elpais:
+#    parser: ElPaisParser
+#    url: https://www.elpais.com/mexico
+#    queries:
+#      hompage_article_links: '.c_t'
