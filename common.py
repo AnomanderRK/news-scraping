@@ -1,8 +1,24 @@
 """Add useful common functions for different parts of the code"""
-
+from __future__ import annotations      # resolve circular dependency with hints
 import yaml
 from typing import List, Dict, Union
 from dataclasses import dataclass
+import bs4
+
+import news_parser as par
+
+
+def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
+    """Apply query to target site and return matches"""
+    return target.select(query)
+
+
+def get_parser(parser_name: str) -> par.NewsParser:
+    """map parser name to NewsParser class"""
+    # noinspection PyTypeChecker
+    parser_map: Dict[str, par.NewsParser] = dict(eluniversalparser=par.ElUniversalParser(),
+                                                 elpaisparser=par.ElPaisParser())
+    return parser_map[parser_name.lower()]
 
 
 @dataclass
@@ -11,6 +27,7 @@ class Site:
     name: str
     url: str
     queries: Dict[str, str]
+    parser: par.NewsParser
 
     @property
     def homepage_links_query(self) -> str:
@@ -31,7 +48,11 @@ class Config:
     def _get_sites(self) -> Dict[str, Site]:
         """Get sites from config yaml"""
         sites: Dict = self.config['news_sites']
-        return {name: Site(name, attrs['url'], attrs['queries']) for name, attrs in sites.items()}
+        return {name: Site(name,
+                           attrs['url'],
+                           attrs['queries'],
+                           get_parser(attrs['parser']))
+                for name, attrs in sites.items()}
 
     @property
     def sites(self) -> Dict[str, Site]:
