@@ -2,13 +2,15 @@
 
 # TODO: separate page parser into two different parsers: one for home an the other for news
 import requests
+import bs4
 
 import lxml.html as html
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Set
 
 from news import News
+import common
 
 
 class NewsParser(ABC):
@@ -20,20 +22,101 @@ class NewsParser(ABC):
     def parse_news(self) -> List[News]:
         """Get news"""
 
+    @property
+    @abstractmethod
+    def site(self) -> common.Site:
+        """Get the Site object used"""
+
+    def get_news_details(self, news_page: bs4.BeautifulSoup) -> News:
+        """Get the details from news page and return a News object"""
+        title = self._get_news_title(news_page)
+        summary = self._get_news_summary(news_page)
+        body = self._get_news_body(news_page)
+        return News(title, summary, body)
+
+    def _get_news_title(self, news_page: bs4.BeautifulSoup) -> str:
+        """Get the news title from news page"""
+        for result in common.select_query(self.site.queries['news_title'], news_page):
+            return result.text.strip()
+        return 'No title found'
+
+    def _get_news_summary(self, news_page: bs4.BeautifulSoup) -> str:
+        """Get the news summary from news page"""
+        for result in common.select_query(self.site.queries['news_summary'], news_page):
+            return result.text.strip()
+        return 'No summary found'
+
+    def _get_news_body(self, news_page: bs4.BeautifulSoup) -> str:
+        """Get the news body from news page"""
+        body_text: List[str] = list()
+        for result in common.select_query(self.site.queries['news_body'], news_page):
+            body_text.append(result.text.strip())
+        return '\n'.join(body_text)
+
 
 class ElUniversalParser(NewsParser):
     """Read news from el universal news"""
     def __init__(self):
+        """get the universal site info initialization"""
+        self._config: common.Config
+        self._site: common.Site
+        self._news_home: List[str]
+
+    def __call__(self, config: common.Config):
+        """Parse data. This is done to have __init__ without arguments"""
+        self._config = config
+        self._site: common.Site = self._config.sites['eluniversal']
+        self._news_home = self.parse_home()
+
+    @property
+    def site(self) -> common.Site:
+        return self._site
+
+    def _get_news_from_home(self, home: bs4.BeautifulSoup) -> List[str]:
+        """Get list of news"""
+        links_set: Set[str] = set()     # use a set to get unique values
+        for link in common.select_query(self._site.homepage_links_query, home):
+            if link and link.has_attr('href'):
+                links_set.add(link['href'])
+        return list(links_set)
+
+    def parse_home(self) -> List[str]:
+        """Parse news from home"""
+        response_home: requests.Response = requests.get(self._site.url)
+        if not response_home.status_code == 200:
+            return list([f'Invalid response from {self._site.url}'])
+        home = bs4.BeautifulSoup(response_home.text, 'html.parser')
+        return self._get_news_from_home(home)
+
+    def parse_news(self) -> List[News]:
+        """Get news from home return a list of News objects"""
+        news_details: List[News] = list()
+        for news_url in self._news_home:
+            response_news: requests.Response = requests.get(news_url)
+            if not response_news.status_code == 200:
+                continue
+            news_page = bs4.BeautifulSoup(response_news.text, 'html.parser')
+            news_details.append(self.get_news_details(news_page))
+        return news_details
+
+
+class ElPaisParser(NewsParser):
+    @property
+    def site(self) -> common.Site:
         pass
 
     def parse_home(self) -> List[str]:
-        ...
+        pass
 
     def parse_news(self) -> List[News]:
-        ...
+        pass
 
 
 class XPathParser(NewsParser):
+    @property
+    def site(self) -> common.Site:
+        pass
+
     HOME_URL = 'https://www.larepublica.co/'
 
     XPATH_LINK_TO_ARTICLE = '//text-fill/a[@class="economiaSect" or @class="empresasSect" or @class="ocioSect" ' \
