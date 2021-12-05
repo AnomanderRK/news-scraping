@@ -7,7 +7,7 @@ import logging
 from typing import List
 
 import news_parser as par
-from store import create_output_folder, save_news_to_folder
+from store import create_output_folder, save_news_to_txt
 from news import News
 from common import Config
 
@@ -20,11 +20,14 @@ def run(config: Config):
     # n_parser: NewsParser = XPathParser()
     # get news for all the different folders
     for site_name, site in config.sites.items():
-        site.parser(config)     # hint: ignore
+        logger.info(f'--- Parsing data from {site_name} ---')
+        site.parser(config)
         site_news: List[News] = site.parser.parse_news()
         # save news
         output_folder: str = create_output_folder(site_name)
-        save_news_to_folder(site_news, output_folder)
+        logger.info(f'Saving results to: {output_folder}')
+
+        save_news_to_txt(site_news, output_folder)
 
 
 if __name__ == '__main__':

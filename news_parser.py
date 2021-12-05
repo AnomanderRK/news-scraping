@@ -3,6 +3,7 @@
 # TODO: separate page parser into two different parsers: one for home an the other for news
 import requests
 import bs4
+import logging
 
 import lxml.html as html
 
@@ -11,6 +12,8 @@ from typing import List, Set
 
 from news import News
 import common
+
+logger = logging.getLogger(__name__)
 
 
 class NewsParser(ABC):
@@ -78,25 +81,32 @@ class ElUniversalParser(NewsParser):
         for link in common.select_query(self._site.homepage_links_query, home):
             if link and link.has_attr('href'):
                 links_set.add(link['href'])
+        logger.info(f'Found: {len(links_set)} different news')
         return list(links_set)
 
     def parse_home(self) -> List[str]:
         """Parse news from home"""
         response_home: requests.Response = requests.get(self._site.url)
         if not response_home.status_code == 200:
+            logger.warning(f'Could not parse data from {self._site.url}')
             return list([f'Invalid response from {self._site.url}'])
         home = bs4.BeautifulSoup(response_home.text, 'html.parser')
+        logger.info(f'Getting news from: {self._site.url}')
         return self._get_news_from_home(home)
 
     def parse_news(self) -> List[News]:
         """Get news from home return a list of News objects"""
         news_details: List[News] = list()
-        for news_url in self._news_home:
+        for i, news_url in enumerate(self._news_home):
+            logger.info(f'({i + 1} / {len(self._news_home)}) - Parsing data from: {news_url} ...')
             response_news: requests.Response = requests.get(news_url)
             if not response_news.status_code == 200:
+                logger.warning(f'--- Failed to parse!')
                 continue
             news_page = bs4.BeautifulSoup(response_news.text, 'html.parser')
             news_details.append(self.get_news_details(news_page))
+            logger.info(f'--- SUCCESS!')
+
         return news_details
 
 
