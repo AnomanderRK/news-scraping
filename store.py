@@ -7,12 +7,13 @@ from typing import List
 from news import News
 
 
-def create_output_folder() -> str:
-    """Create output folder if not exists and return it"""
+def create_output_folder(site: str) -> str:
+    """Create output folder for site, if it does not exists and return it"""
     today: str = datetime.date.today().strftime('%d-%m-%Y')
-    if not os.path.isdir(today):
-        os.mkdir(today)
-    return today
+    o_folder: str = os.path.join(os.getcwd(), today, site)
+    if not os.path.isdir(o_folder):
+        os.mkdir(o_folder)
+    return o_folder
 
 
 def save_news_to_folder(news: List[News], output_folder: str):
