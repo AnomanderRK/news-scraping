@@ -6,7 +6,7 @@ import logging
 
 from typing import List
 
-from news_parser import XPathParser, NewsParser
+import news_parser as par
 from store import create_output_folder, save_news_to_folder
 from news import News
 from common import Config
@@ -17,14 +17,14 @@ logger = logging.getLogger(__name__)
 
 def run(config: Config):
     """Get the news for today and save them into [today] folder as different txt files"""
-    n_parser: NewsParser = XPathParser()
-    # get news
-    n_parser.parse_home()
-    news: List[News] = n_parser.parse_news()
-
-    # save news
-    output_folder: str = create_output_folder()
-    save_news_to_folder(news, output_folder)
+    # n_parser: NewsParser = XPathParser()
+    # get news for all the different folders
+    for site_name, site in config.sites.items():
+        site.parser(config)     # hint: ignore
+        site_news: List[News] = site.parser.parse_news()
+        # save news
+        output_folder: str = create_output_folder(site_name)
+        save_news_to_folder(site_news, output_folder)
 
 
 if __name__ == '__main__':
