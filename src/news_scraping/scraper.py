@@ -6,10 +6,9 @@ import logging
 
 from typing import List
 
-import news_parser as par
-from store import create_output_folder, save_news_to_txt
-from news import News
-from common import Config
+from src.news_scraping.store import create_output_folder, save_news_to_txt
+from src.news_scraping.news import News
+from src.news_scraping.common import Config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

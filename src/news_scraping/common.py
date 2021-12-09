@@ -1,11 +1,11 @@
 """Add useful common functions for different parts of the code"""
 from __future__ import annotations      # resolve circular dependency with hints
 import yaml
-from typing import List, Dict, Union
+from typing import Dict
 from dataclasses import dataclass
 import bs4
 
-import news_parser as par
+from src.news_scraping import news_parser as par
 
 
 def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
