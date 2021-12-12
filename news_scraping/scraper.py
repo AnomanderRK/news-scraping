@@ -20,7 +20,7 @@ def run(config: Config):
     # get news for all the different folders
     for site_name, site in config.sites.items():
         logger.info(f'--- Parsing data from {site_name} ---')
-        site.parser(config)
+        site.parser(config)     # type: ignore
         site_news: List[News] = site.parser.parse_news()
         # save news
         output_folder: str = create_output_folder(site_name)

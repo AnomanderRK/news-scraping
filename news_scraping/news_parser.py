@@ -40,13 +40,13 @@ class NewsParser(ABC):
     def _get_news_title(self, news_page: bs4.BeautifulSoup) -> str:
         """Get the news title from news page"""
         for result in common.select_query(self.site.queries['news_title'], news_page):
-            return result.text.strip()
+            return str(result.text.strip())
         return 'No title found'
 
     def _get_news_summary(self, news_page: bs4.BeautifulSoup) -> str:
         """Get the news summary from news page"""
         for result in common.select_query(self.site.queries['news_summary'], news_page):
-            return result.text.strip()
+            return str(result.text.strip())
         return 'No summary found'
 
     def _get_news_body(self, news_page: bs4.BeautifulSoup) -> str:
@@ -68,7 +68,7 @@ class ElUniversalParser(NewsParser):
     def __call__(self, config: common.Config):
         """Parse data. This is done to have __init__ without arguments"""
         self._config = config
-        self._site: common.Site = self._config.sites['eluniversal']
+        self._site = self._config.sites['eluniversal']
         self._news_home = self.parse_home()
 
     @property
@@ -137,17 +137,17 @@ class XPathParser(NewsParser):
 
     def __init__(self):
         """Setup variables"""
-        self.parsed_home = None
-        self.linked_news = None
-        self.news: List[News] = list()
+        self.parsed_home: html.HtmlElement
+        self.linked_news: List[str]
+        self.news: List[News]
 
     def parse_home(self) -> List[str]:
         """Get list of news"""
         response_home: requests.Response = requests.get(self.HOME_URL)
         if response_home.status_code == 200:
             home: str = response_home.content.decode('utf-8')
-            self.parsed_home: html.HtmlElement = html.fromstring(home)
-            self.linked_news: List[str] = self.parsed_home.xpath(self.XPATH_LINK_TO_ARTICLE)
+            self.parsed_home = html.fromstring(home)
+            self.linked_news = self.parsed_home.xpath(self.XPATH_LINK_TO_ARTICLE)
             return self.linked_news
         else:
             raise ValueError(f"Response from {self.HOME_URL}: {response_home}")
@@ -159,7 +159,7 @@ class XPathParser(NewsParser):
 
     def parse_summary(self, parsed_news: html.HtmlElement) -> str:
         """parse summary from news"""
-        return parsed_news.xpath(self.XPATH_SUMMARY)[0]
+        return str(parsed_news.xpath(self.XPATH_SUMMARY)[0])
 
     def parse_body(self, parsed_news: html.HtmlElement) -> str:
         """parse body from news"""

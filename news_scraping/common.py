@@ -2,10 +2,21 @@
 from __future__ import annotations      # resolve circular dependency with hints
 import yaml
 from typing import Dict
+from typing_extensions import TypedDict
 from dataclasses import dataclass
 import bs4
 
 from news_scraping import news_parser as par
+
+
+class SiteHint(TypedDict):
+    """Hinting for config sites"""
+    parser: str
+    url: str
+    queries: Dict[str, str]
+
+
+Sites = Dict[str, Dict[str, SiteHint]]
 
 
 def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
@@ -40,14 +51,14 @@ class Config:
         """Load configuration from yaml"""
         self.config_path: str = config_path
         with open(self.config_path, 'r') as config_file:
-            self.config: dict = yaml.load(config_file, yaml.FullLoader)
+            self.config: Sites = yaml.load(config_file, yaml.FullLoader)
 
         # get a list of configs
         self._sites: Dict[str, Site] = self._get_sites()
 
     def _get_sites(self) -> Dict[str, Site]:
         """Get sites from config yaml"""
-        sites: Dict = self.config['news_sites']
+        sites: Dict[str, SiteHint] = self.config['news_sites']
         return {name: Site(name,
                            attrs['url'],
                            attrs['queries'],
