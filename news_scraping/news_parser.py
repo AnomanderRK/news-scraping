@@ -1,6 +1,5 @@
 """Contains different parsers like beautiful soup and xpath"""
 
-# TODO: separate page parser into two different parsers: one for home an the other for news
 import requests
 import bs4
 import logging
@@ -65,10 +64,10 @@ class ElUniversalParser(NewsParser):
         self._site: common.Site
         self._news_home: List[str]
 
-    def __call__(self, config: common.Config):
+    def __call__(self, config: common.Config, site_name: str = 'eluniversal'):
         """Parse data. This is done to have __init__ without arguments"""
         self._config = config
-        self._site = self._config.sites['eluniversal']
+        self._site = self._config.sites[site_name]
         self._news_home = self.parse_home()
 
     @property
