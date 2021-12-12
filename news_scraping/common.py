@@ -69,6 +69,3 @@ class Config:
     def sites(self) -> Dict[str, Site]:
         """Get sites from configuration"""
         return self._sites
-
-
-

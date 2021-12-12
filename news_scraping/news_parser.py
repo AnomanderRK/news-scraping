@@ -101,11 +101,11 @@ class ElUniversalParser(NewsParser):
             logger.info(f'({i + 1} / {len(self._news_home)}) - Parsing data from: {news_url} ...')
             response_news: requests.Response = requests.get(news_url)
             if not response_news.status_code == 200:
-                logger.warning(f'--- Failed to parse!')
+                logger.warning('--- Failed to parse!')
                 continue
             news_page = bs4.BeautifulSoup(response_news.text, 'html.parser')
             news_details.append(self.get_news_details(news_page))
-            logger.info(f'--- SUCCESS!')
+            logger.info('--- SUCCESS!')
 
         return news_details
 

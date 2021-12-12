@@ -42,5 +42,4 @@ def save_news_to_txt(news: List[News], output_folder: str):
             f.write(f'{new.body}')
             f.write('\n\n')
 
-    logger.info(f'Saving results finished!')
-
+    logger.info('Saving results finished!')
