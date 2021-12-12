@@ -10,8 +10,8 @@ import lxml.html as html
 from abc import ABC, abstractmethod
 from typing import List, Set
 
-from src.news_scraping.news import News
-from src.news_scraping import common
+from news_scraping.news import News
+from news_scraping import common
 
 logger = logging.getLogger(__name__)
 

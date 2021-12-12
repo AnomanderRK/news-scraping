@@ -6,7 +6,7 @@ import logging
 from pathvalidate import sanitize_filepath
 
 from typing import List, Union
-from src.news_scraping.news import News
+from news_scraping.news import News
 
 logger = logging.getLogger(__name__)
 

@@ -5,7 +5,7 @@ from typing import Dict
 from dataclasses import dataclass
 import bs4
 
-from src.news_scraping import news_parser as par
+from news_scraping import news_parser as par
 
 
 def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
