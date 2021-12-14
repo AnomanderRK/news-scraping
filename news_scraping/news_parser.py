@@ -1,4 +1,5 @@
 """Contains different parsers like beautiful soup and xpath"""
+from __future__ import annotations      # resolve circular dependency with hints
 
 import requests
 import bs4

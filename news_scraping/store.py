@@ -20,10 +20,10 @@ def create_output_folder(site: str) -> str:
     return o_folder
 
 
-def format_output_name(output_folder: str, title: str, identifier: Union[int, str]) -> str:
+def format_output_name(output_folder: str, title: str, identifier: Union[int, str], name_max_len: int = 50) -> str:
     """format output name in he following way: output_folder/tile/identifier"""
-    title = title.strip().replace(' ', '_').replace("'", '"')
-    clean_title = sanitize_filepath(title, max_len=50)
+    title = title.strip().replace(' ', '_').replace("'", '"').replace("/", '')
+    clean_title = sanitize_filepath(title, max_len=name_max_len)
     output_file = os.path.join(output_folder, f'{identifier}_{clean_title}')
     return output_file
 
