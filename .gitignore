@@ -1,2 +1,7 @@
 /.idea
-/venv
+/venv/
+.tox/
+
+*egg-info/
+*__pycache__/
+*.coverage
