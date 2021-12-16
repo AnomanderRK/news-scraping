@@ -48,7 +48,7 @@ def save_news_to_txt(news: List[News], output_folder: str):
 
 def save_news_to_csv(news: List[News], output_folder: str, file_name: str = '_consolidated_news.csv') -> None:
     """Save results to one, unique, csv file_name.csv"""
-    output_file_name: str = format_output_name (output_folder=output_folder, title=file_name)
+    output_file_name: str = format_output_name(output_folder=output_folder, title=file_name)
     # Create a column per attribute (not special)
     cols: List[str] = [attr for attr in News.__annotations__]
     data_dict: Dict[str, List[str]] = {col: [] for col in cols}
@@ -57,4 +57,3 @@ def save_news_to_csv(news: List[News], output_folder: str, file_name: str = '_co
             data_dict[col].append(getattr(n, col))
     data_df = pd.DataFrame(data_dict)
     data_df.to_csv(output_file_name, index=False)
-
