@@ -31,6 +31,7 @@ def format_output_name(output_folder: str, title: str, identifier: Union[int, st
 
 def save_news_to_txt(news: List[News], output_folder: str):
     """Save results into output folder"""
+    logger.info(f'Saving individual results to: {output_folder}')
     for i, new in enumerate(news):
         output_file_name: str = format_output_name(output_folder, new.title, i)
         with open(f'{output_file_name}.txt', 'w', encoding='utf-8') as f:
@@ -43,12 +44,11 @@ def save_news_to_txt(news: List[News], output_folder: str):
             f.write(f'{new.body}')
             f.write('\n\n')
 
-    logger.info('Saving results finished!')
-
 
 def save_news_to_csv(news: List[News], output_folder: str, file_name: str = '_consolidated_news.csv') -> None:
     """Save results to one, unique, csv file_name.csv"""
     output_file_name: str = format_output_name(output_folder=output_folder, title=file_name)
+    logger.info(f'Saving results to: {output_file_name}')
     # Create a column per attribute (not special)
     cols: List[str] = [attr for attr in News.__annotations__]
     data_dict: Dict[str, List[str]] = {col: [] for col in cols}

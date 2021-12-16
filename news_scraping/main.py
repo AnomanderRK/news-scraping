@@ -19,13 +19,10 @@ def run(config: Config):
     # n_parser: NewsParser = XPathParser()
     # get news for all the different folders
     for site_name, site in config.sites.items():
-        logger.info(f'--- Parsing data from {site_name} ---')
         site.parser(config)     # type: ignore
         site_news: List[News] = site.parser.parse_news()
         # save news
         output_folder: str = create_output_folder(site_name)
-        logger.info(f'Saving results to: {output_folder}')
-
         save_news_to_txt(site_news, output_folder)
         save_news_to_csv(site_news, output_folder)
 
