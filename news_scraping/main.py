@@ -6,7 +6,7 @@ import logging
 
 from typing import List
 
-from news_scraping.store import create_output_folder, save_news_to_txt
+from news_scraping.store import create_output_folder, save_news_to_txt, save_news_to_csv
 from news_scraping.news import News
 from news_scraping.common import Config
 
@@ -27,6 +27,7 @@ def run(config: Config):
         logger.info(f'Saving results to: {output_folder}')
 
         save_news_to_txt(site_news, output_folder)
+        save_news_to_csv(site_news, output_folder)
 
 
 if __name__ == '__main__':
