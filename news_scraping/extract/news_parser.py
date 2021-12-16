@@ -10,7 +10,7 @@ import lxml.html as html
 from abc import ABC, abstractmethod
 from typing import List, Set
 
-from news_scraping.news import News
+from news_scraping.extract.news import News
 from news_scraping import common
 
 logger = logging.getLogger(__name__)
@@ -61,14 +61,12 @@ class ElUniversalParser(NewsParser):
     """Read news from el universal news"""
     def __init__(self):
         """get the universal site info initialization"""
-        self._config: common.Config
         self._site: common.Site
         self._news_home: List[str]
 
-    def __call__(self, config: common.Config, site_name: str = 'eluniversal'):
+    def __call__(self, site: common.Site):
         """Parse data. This is done to have __init__ without arguments"""
-        self._config = config
-        self._site = self._config.sites[site_name]
+        self._site = site
         self._news_home = self.parse_home()
 
     @property

@@ -1,3 +1,5 @@
+# Output path relative to working directory
+output_path: output
 news_sites:
   eluniversal:
     parser: ElUniversalParser

@@ -7,18 +7,23 @@ import pandas as pd
 from pathvalidate import sanitize_filepath
 
 from typing import List, Union, Dict
-from news_scraping.news import News
+from news_scraping.extract.news import News
 
 logger = logging.getLogger(__name__)
 
 
-def create_output_folder(site: str) -> str:
-    """Create output folder for site, if it does not exists and return it"""
+def create_output_folder(output_folder: str) -> str:
+    """Create output folder if not available and return it"""
+    if not os.path.isdir(output_folder):
+        os.makedirs(output_folder)
+    return output_folder
+
+
+def create_output_folder_from_site(output_path: str, site: str) -> str:
+    """Create output folder for site, if it does not exists, and return it"""
     today: str = datetime.date.today().strftime('%d-%m-%Y')
-    o_folder: str = os.path.join(os.getcwd(), today, site)
-    if not os.path.isdir(o_folder):
-        os.makedirs(o_folder)
-    return o_folder
+    o_folder: str = os.path.join(output_path, site, today)
+    return create_output_folder(o_folder)
 
 
 def format_output_name(output_folder: str, title: str, identifier: Union[int, str] = '', name_max_len: int = 50) -> str:

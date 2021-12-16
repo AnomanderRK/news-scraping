@@ -1,12 +1,14 @@
 """Add useful common functions for different parts of the code"""
 from __future__ import annotations      # resolve circular dependency with hints
 import yaml
-from typing import Dict
+from typing import Dict, Union
 from typing_extensions import TypedDict
 from dataclasses import dataclass
 import bs4
+import os
 
-from news_scraping import news_parser as par
+from news_scraping.extract import news_parser as par
+from news_scraping.store import create_output_folder
 
 
 class SiteHint(TypedDict):
@@ -16,7 +18,7 @@ class SiteHint(TypedDict):
     queries: Dict[str, str]
 
 
-Sites = Dict[str, Dict[str, SiteHint]]
+Sites = Dict[str, Union[str, Dict[str, SiteHint]]]
 
 
 def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
@@ -55,6 +57,14 @@ class Config:
 
         # get a list of configs
         self._sites: Dict[str, Site] = self._get_sites()
+        self._output_path: str = self._get_output_path()
+
+    def _get_output_path(self) -> str:
+        """Get output path from config"""
+        config_output_path: str = self.config['output_path']
+        output_path: str = os.path.join(os.getcwd(), config_output_path)
+        # Ensure path is available
+        return create_output_folder(output_path)
 
     def _get_sites(self) -> Dict[str, Site]:
         """Get sites from config yaml"""
@@ -69,3 +79,8 @@ class Config:
     def sites(self) -> Dict[str, Site]:
         """Get sites from configuration"""
         return self._sites
+
+    @property
+    def output_folder(self) -> str:
+        """Get output folder from config"""
+        return self._output_path
