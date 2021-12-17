@@ -15,9 +15,6 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
-# Data enrichment
-#   use nlt to analyze natural language
-
 
 def run(input_path: str) -> None:
     """Perform Data wrangling and enrichment"""
