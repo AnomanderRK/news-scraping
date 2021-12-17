@@ -6,7 +6,7 @@ import os
 from typing import List, Dict, Callable, Union
 from datetime import datetime
 
-from news_scraping.store import read_news_from_txt
+from news_scraping.io import read_news_from_txt, read_news_from_csv
 
 
 def get_date_time_from_string(path: str, pattern='%d-%m-%Y') -> Union[datetime, None]:
@@ -31,7 +31,7 @@ def read_news_from_directory(folder: str, suffix: str = '.csv') -> pd.DataFrame:
     """
     # map a file type to a function to read data
     suffix_map: Dict[str, Callable[[str], pd.DataFrame]] = {
-        '.csv': pd.read_csv,
+        '.csv': read_news_from_csv,
         '.txt': read_news_from_txt
     }
     get_news: Callable[[str], pd.DataFrame] = suffix_map[suffix]

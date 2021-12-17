@@ -9,3 +9,4 @@ class News:
     title: str
     summary: str
     body: str
+    url: str

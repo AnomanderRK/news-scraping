@@ -21,14 +21,7 @@ logger = logging.getLogger(__name__)
 
 def run(input_path: str) -> None:
     """Perform Data wrangling and enrichment"""
-    news_df: pd.DataFrame = read_news_from_directory(input_path, suffix='.csv')
-    # Data wrangling
-    news_df['host'] = get_host(url_col=news_df['url'])
-    news_df['uid'] = hash_uid(column=news_df['url'])
-    news_df = sanity_check(news_df, subset=['title'])
-    news_df['n_tokens_title'] = tokenize_column(news_df, column_name='title')
-    news_df['n_tokens_body'] = tokenize_column(news_df, column_name='body')
-    save_data_to_pickle(news_df, input_path)
+    pass
 
 
 if __name__ == '__main__':

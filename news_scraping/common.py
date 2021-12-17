@@ -8,7 +8,7 @@ import bs4
 import os
 
 from news_scraping.extract import news_parser as par
-from news_scraping.store import create_output_folder
+from news_scraping.io import create_output_folder
 
 
 class SiteHint(TypedDict):

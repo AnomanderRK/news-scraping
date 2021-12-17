@@ -30,12 +30,12 @@ class NewsParser(ABC):
     def site(self) -> common.Site:
         """Get the Site object used"""
 
-    def get_news_details(self, news_page: bs4.BeautifulSoup) -> News:
+    def get_news_details(self, news_page: bs4.BeautifulSoup, news_url: str) -> News:
         """Get the details from news page and return a News object"""
         title = self._get_news_title(news_page)
         summary = self._get_news_summary(news_page)
         body = self._get_news_body(news_page)
-        return News(title, summary, body)
+        return News(title, summary, body, news_url)
 
     def _get_news_title(self, news_page: bs4.BeautifulSoup) -> str:
         """Get the news title from news page"""
@@ -102,7 +102,7 @@ class ElUniversalParser(NewsParser):
                 logger.warning('--- Failed to parse!')
                 continue
             news_page = bs4.BeautifulSoup(response_news.text, 'html.parser')
-            news_details.append(self.get_news_details(news_page))
+            news_details.append(self.get_news_details(news_page, news_url))
             logger.info('--- SUCCESS!')
 
         return news_details

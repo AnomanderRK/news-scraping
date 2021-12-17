@@ -10,7 +10,7 @@ import logging
 
 from typing import List, Dict
 
-from news_scraping.store import create_output_folder_from_site, save_news_to_txt, save_news_to_csv
+from news_scraping.io import create_output_folder_from_site, save_news_to_txt, save_news_to_csv
 from news_scraping.extract.news import News
 from news_scraping.common import Config, Site
 

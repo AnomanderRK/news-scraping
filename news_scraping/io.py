@@ -37,15 +37,14 @@ def format_output_name(output_folder: str, title: str, identifier: Union[int, st
 def save_news_to_txt(news: List[News], output_folder: str):
     """Save results into output folder"""
     logger.info(f'Saving individual results to: {output_folder}')
+    # one row per attribute
+    attrs: List[str] = [attr for attr in News.__annotations__]
     for i, new in enumerate(news):
         output_file_name: str = format_output_name(output_folder, new.title, i)
         with open(f'{output_file_name}.txt', 'w', encoding='utf-8') as f:
-            # write the news
-            f.write(new.title)
-            f.write('\n')
-            f.write(f'{new.summary}')
-            f.write('\n')
-            f.write(f'{new.body}')
+            for attr in attrs:
+                f.write(getattr(new, attr))
+                f.write('\n')
 
 
 def read_news_from_txt(txt_file) -> pd.DataFrame:
@@ -55,11 +54,12 @@ def read_news_from_txt(txt_file) -> pd.DataFrame:
     second line: summary
     third line: body
     """
-    data: Dict[str, List[str]] = dict(title=[], summary=[], body=[])
+    attrs: List[str] = [attr for attr in News.__annotations__]
+    data: Dict[str, List[str]] = {attr: [] for attr in attrs}
+
     with open(txt_file, 'r', encoding='utf-8') as f:
-        data['title'].append(f.readline())
-        data['summary'].append(f.readline())
-        data['body'].append(f.readline())
+        for attr in attrs:
+            data[attr].append(f.readline())
     return pd.DataFrame(data)
 
 
@@ -75,3 +75,17 @@ def save_news_to_csv(news: List[News], output_folder: str, file_name: str = '_co
             data_dict[col].append(getattr(n, col))
     data_df = pd.DataFrame(data_dict)
     data_df.to_csv(output_file_name, index=False)
+
+
+def read_news_from_csv(csv_file: str) -> pd.DataFrame:
+    """Read data from csv file and return a dataframe"""
+    logger.info(f'Reading data from: {csv_file}')
+    return pd.read_csv(csv_file)
+
+
+def save_data_to_pickle(data: pd.DataFrame, output_path: str, name: str = 'transform_df.pkl') -> None:
+    """Save dataframe to pickle"""
+    create_output_folder(output_path)
+    o_path: str = os.path.join(output_path, name)
+    logger.info(f'Saving data to: {o_path}')
+    data.to_pickle(o_path)
