@@ -42,12 +42,25 @@ def save_news_to_txt(news: List[News], output_folder: str):
         with open(f'{output_file_name}.txt', 'w', encoding='utf-8') as f:
             # write the news
             f.write(new.title)
-            f.write('\n\n')
-            f.write('\n\n')
+            f.write('\n')
             f.write(f'{new.summary}')
-            f.write('\n\n')
+            f.write('\n')
             f.write(f'{new.body}')
-            f.write('\n\n')
+
+
+def read_news_from_txt(txt_file) -> pd.DataFrame:
+    """
+    Read news from a txt file. Expecting the following structure:
+    first line: title
+    second line: summary
+    third line: body
+    """
+    data: Dict[str, List[str]] = dict(title=[], summary=[], body=[])
+    with open(txt_file, 'r', encoding='utf-8') as f:
+        data['title'].append(f.readline())
+        data['summary'].append(f.readline())
+        data['body'].append(f.readline())
+    return pd.DataFrame(data)
 
 
 def save_news_to_csv(news: List[News], output_folder: str, file_name: str = '_consolidated_news.csv') -> None:
