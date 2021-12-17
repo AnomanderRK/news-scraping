@@ -7,7 +7,6 @@ Get the news for today from different news sites and save them into [today] fold
 """
 import argparse
 import logging
-import os
 
 from typing import List, Dict
 
