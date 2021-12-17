@@ -4,6 +4,9 @@ Transform data to have more information regarding the news
 
 import argparse
 import logging
+import pandas as pd
+
+from news_scraping.transforn.utils import read_news_from_directory
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 def run(input_path: str) -> None:
     """Perform Data wrangling and enrichment"""
+    # read dataframe
+    news_df: pd.DataFrame = read_news_from_directory(input_path, suffix='.txt')
     pass
 
 
