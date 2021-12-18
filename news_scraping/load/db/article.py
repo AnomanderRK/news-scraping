@@ -1,4 +1,5 @@
 """Handle database connections and interactions"""
+import os
 
 from sqlalchemy import Column, String, Integer, DateTime
 
@@ -6,13 +7,22 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-
-engine = create_engine('sqlite:///newspaper.db')
-Session = sessionmaker(bind=engine)
-Base = declarative_base()
+from news_scraping.io import create_output_folder
 
 
-class Article(Base):
+class DataBaseConnection:
+    """Configure database connection"""
+    Base = declarative_base()
+
+    def __init__(self, folder: str, database_name: str = 'newspaper.db'):
+        """Create database connection"""
+        self.database_path: str = os.path.join(folder, database_name)
+        create_output_folder(folder)
+        self.engine = create_engine(f'sqlite:///{self.database_path}')
+        self.Session = sessionmaker(bind=self.engine)
+
+
+class Article(DataBaseConnection.Base):
     __tablename__ = 'articles'
 
     uid = Column(String, primary_key=True)

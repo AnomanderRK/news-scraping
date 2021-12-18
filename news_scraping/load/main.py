@@ -9,7 +9,7 @@ import dataclasses
 
 from news_scraping.load.utils import read_news_from_pickles
 from news_scraping.news import NewsList
-from news_scraping.load.db.article import Base, engine, Session, Article
+from news_scraping.load.db.article import DataBaseConnection, Article
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,13 +19,14 @@ logger = logging.getLogger(__name__)
 def run(input_path: str) -> None:
     """Save data into a database"""
     # configure database
-    Base.metadata.create_all(engine)
+    conn = DataBaseConnection(input_path)
+    conn.Base.metadata.create_all(conn.engine)
     # Read data
     news: pd.DataFrame = read_news_from_pickles(input_path)
     news_list = NewsList()
     news_list.read_from_df(news)
     # save data to database
-    with Session() as session:
+    with conn.Session() as session:
         with session.begin():
             for art in news_list.get_news():
                 logger.info(f'Loading article uid {art.uid} into DB')
