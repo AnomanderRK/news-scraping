@@ -10,8 +10,8 @@ import logging
 
 from typing import List, Dict
 
-from news_scraping.io import create_output_folder_from_site, save_news_to_txt, save_news_to_csv
-from news_scraping.extract.news import News
+from news_scraping.io import create_output_folder_from_site, save_news_to_csv
+from news_scraping.news import News
 from news_scraping.common import Config, Site
 
 logging.basicConfig(level=logging.INFO)
@@ -26,7 +26,7 @@ def run(sites: Dict[str, Site], output_folder: str):
         site_news: List[News] = site.parser.parse_news()
         # save news in specific folder
         output_folder: str = create_output_folder_from_site(output_folder, site_name)
-        save_news_to_txt(site_news, output_folder)
+        # save_news_to_txt(site_news, output_folder)
         save_news_to_csv(site_news, output_folder)
 
 

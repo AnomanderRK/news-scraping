@@ -7,7 +7,7 @@ import pandas as pd
 from pathvalidate import sanitize_filepath
 
 from typing import List, Union, Dict
-from news_scraping.extract.news import News
+from news_scraping.news import News
 
 logger = logging.getLogger(__name__)
 

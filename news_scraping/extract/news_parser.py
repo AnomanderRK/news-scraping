@@ -10,7 +10,7 @@ import lxml.html as html
 from abc import ABC, abstractmethod
 from typing import List, Set
 
-from news_scraping.extract.news import News
+from news_scraping.news import News, NewsList
 from news_scraping import common
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,11 @@ class NewsParser(ABC):
     @property
     @abstractmethod
     def site(self) -> common.Site:
+        """Get the Site object used"""
+
+    @property
+    @abstractmethod
+    def news(self) -> NewsList:
         """Get the Site object used"""
 
     def get_news_details(self, news_page: bs4.BeautifulSoup, news_url: str) -> News:
@@ -63,11 +68,16 @@ class ElUniversalParser(NewsParser):
         """get the universal site info initialization"""
         self._site: common.Site
         self._news_home: List[str]
+        self._news: NewsList = NewsList()
 
     def __call__(self, site: common.Site):
         """Parse data. This is done to have __init__ without arguments"""
         self._site = site
         self._news_home = self.parse_home()
+
+    @property
+    def news(self) -> NewsList:
+        return self._news
 
     @property
     def site(self) -> common.Site:
@@ -94,7 +104,6 @@ class ElUniversalParser(NewsParser):
 
     def parse_news(self) -> List[News]:
         """Get news from home return a list of News objects"""
-        news_details: List[News] = list()
         for i, news_url in enumerate(self._news_home):
             logger.info(f'({i + 1} / {len(self._news_home)}) - Parsing data from: {news_url} ...')
             response_news: requests.Response = requests.get(news_url)
@@ -102,15 +111,19 @@ class ElUniversalParser(NewsParser):
                 logger.warning('--- Failed to parse!')
                 continue
             news_page = bs4.BeautifulSoup(response_news.text, 'html.parser')
-            news_details.append(self.get_news_details(news_page, news_url))
+            self._news.append(self.get_news_details(news_page, news_url))
             logger.info('--- SUCCESS!')
 
-        return news_details
+        return self._news.get_news()
 
 
 class ElPaisParser(NewsParser):
     @property
     def site(self) -> common.Site:
+        pass
+
+    @property
+    def news(self) -> common.Site:
         pass
 
     def parse_home(self) -> List[str]:
