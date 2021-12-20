@@ -18,7 +18,7 @@ def get_host(url_col: pd.Series) -> pd.Series:
 def sanity_check(news_df: pd.DataFrame, subset: Optional[List[str]] = None) -> pd.DataFrame:
     """Handle missing and duplicated titles on subset if provided"""
     logger.info('Performing sanity check')
-    news_df = news_df.drop_duplicates(subset=subset)
+    news_df = news_df.drop_duplicates(subset=subset).reset_index()
     news_df = news_df.dropna(subset=subset)
     return news_df
 

@@ -6,6 +6,7 @@ import argparse
 import logging
 import pandas as pd
 import dataclasses
+from sqlalchemy.exc import IntegrityError
 
 from news_scraping.load.utils import read_news_from_pickles
 from news_scraping.news import NewsList
@@ -26,23 +27,20 @@ def run(input_path: str) -> None:
     news_list = NewsList()
     news_list.read_from_df(news)
     # save data to database
-    with conn.Session() as session:
-        with session.begin():
-            for art in news_list.get_news():
-                logger.info(f'Loading article uid {art.uid} into DB')
-                article = Article(**dataclasses.asdict(art))
-                try:
-                    session.add(article)
-                except Exception as e:
-                    logger.error(f'Error: {e}')
-                    logger.error(f'Article: {art}')
+    with conn.Session.begin() as session:
+        for art in news_list.get_news():
+            logger.info(f'Loading article uid {art.uid} into DB')
+            article = Article(**dataclasses.asdict(art))
+            try:
+                session.add(article)
+            except IntegrityError as e:
+                logger.error(f'Error: {e}')
 
 
 if __name__ == '__main__':
     # load the configuration file
     args_parser = argparse.ArgumentParser()
-    # if no input path provided it will take the path from config
-    args_parser.add_argument('--inputs', help='Path to input folder', required=False)
+    args_parser.add_argument('--inputs', help='Path to input folder', required=True)
     args = args_parser.parse_args()
     input_f: str = args.inputs
     logger.info(f'Reading inputs from: {input_f}')

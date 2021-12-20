@@ -6,9 +6,9 @@ import argparse
 import logging
 import pandas as pd
 
-from news_scraping.transforn.utils import read_news_from_directory
-from news_scraping.transforn.cleaning import get_host, sanity_check, hash_uid
-from news_scraping.transforn.enrichment import tokenize_column
+from news_scraping.transform.utils import read_news_from_directory
+from news_scraping.transform.cleaning import get_host, sanity_check, hash_uid
+from news_scraping.transform.enrichment import tokenize_column
 from news_scraping.io import save_data_to_pickle
 
 logging.basicConfig(level=logging.INFO)
