@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from news_scraping.io import create_output_folder
+from news_scraping.output import create_output_folder
 
 
 class DataBaseConnection:

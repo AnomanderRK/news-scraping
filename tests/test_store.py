@@ -1,7 +1,7 @@
 import pytest
 
 import os
-import news_scraping.io as store
+import news_scraping.output as store
 
 
 @pytest.fixture

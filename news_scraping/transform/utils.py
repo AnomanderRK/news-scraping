@@ -6,7 +6,7 @@ import os
 from typing import List, Dict, Callable, Union
 from datetime import datetime
 
-from news_scraping.io import read_news_from_txt, read_news_from_csv
+from news_scraping.output import read_news_from_txt, read_news_from_csv
 
 
 def get_date_time_from_string(path: str, pattern='%d-%m-%Y') -> Union[datetime, None]:
