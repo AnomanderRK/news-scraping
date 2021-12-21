@@ -30,4 +30,3 @@ def hash_uid(column: pd.Series) -> pd.Series:
                       .apply(lambda item: hashlib.md5(bytes(str(item).encode())))
                       .apply(lambda hash_object: hash_object.hexdigest()))
     return uid
-
