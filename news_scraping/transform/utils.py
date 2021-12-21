@@ -18,6 +18,7 @@ def get_date_time_from_string(path: str, pattern='%d-%m-%Y') -> Union[datetime, 
         except ValueError:
             # No matching pattern
             pass
+    return None
 
 
 def read_news_from_directory(folder: str, suffix: str = '.csv') -> pd.DataFrame:

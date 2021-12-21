@@ -22,7 +22,7 @@ class DataBaseConnection:
         self.Session = sessionmaker(bind=self.engine)
 
 
-class Article(DataBaseConnection.Base):
+class Article(DataBaseConnection.Base):     # type: ignore
     __tablename__ = 'articles'
 
     uid = Column(String, primary_key=True)

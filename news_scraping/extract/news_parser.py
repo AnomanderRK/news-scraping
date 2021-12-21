@@ -5,8 +5,6 @@ import requests
 import bs4
 import logging
 
-import lxml.html as html
-
 from abc import ABC, abstractmethod
 from typing import List, Set
 

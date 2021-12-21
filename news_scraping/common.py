@@ -29,8 +29,7 @@ def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
 def get_parser(parser_name: str) -> par.NewsParser:
     """map parser name to NewsParser class"""
     # noinspection PyTypeChecker
-    parser_map: Dict[str, par.NewsParser] = dict(eluniversalparser=par.ElUniversalParser(),
-                                                 elpaisparser=par.ElPaisParser())
+    parser_map: Dict[str, par.NewsParser] = dict(eluniversalparser=par.ElUniversalParser())
     return parser_map[parser_name.lower()]
 
 
@@ -61,14 +60,16 @@ class Config:
 
     def _get_output_path(self) -> str:
         """Get output path from config"""
-        config_output_path: str = self.config['output_path']
-        output_path: str = os.path.join(os.getcwd(), config_output_path)
+        config_output_path: Union[str, Dict[str, SiteHint]] = self.config['output_path']
+        output_path: str = os.path.join(os.getcwd(), str(config_output_path))
         # Ensure path is available
         return create_output_folder(output_path)
 
     def _get_sites(self) -> Dict[str, Site]:
         """Get sites from config yaml"""
-        sites: Dict[str, SiteHint] = self.config['news_sites']
+        sites: Union[str, Dict[str, SiteHint]] = self.config['news_sites']
+        if not isinstance(sites, dict):
+            raise TypeError(f'Invalid type: {sites}')
         return {name: Site(name,
                            attrs['url'],
                            attrs['queries'],

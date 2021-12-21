@@ -1,7 +1,7 @@
 """Simple notice object"""
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Union
 import pandas as pd
 
 
@@ -36,5 +36,5 @@ class NewsList:
     def read_from_df(self, df: pd.DataFrame) -> None:
         """Read news from pandas dataframe"""
         for _, row in df.iterrows():
-            attrs: Dict[str, str] = {attr: row[attr] for attr in News.__annotations__}
-            self.append(News(**attrs))
+            attrs: Dict[str, Union[str, int]] = {attr: row[attr] for attr in News.__annotations__}
+            self.append(News(**attrs))  # type: ignore
