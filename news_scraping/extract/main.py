@@ -25,9 +25,9 @@ def run(sites: Dict[str, Site], output_folder: str):
         site.parser(site)     # type: ignore
         site_news: List[News] = site.parser.parse_news()
         # save news in specific folder
-        output_folder: str = create_output_folder_from_site(output_folder, site_name)
+        valid_output_folder: str = create_output_folder_from_site(output_folder, site_name)
         # save_news_to_txt(site_news, output_folder)
-        save_news_to_csv(site_news, output_folder)
+        save_news_to_csv(site_news, valid_output_folder)
 
 
 if __name__ == '__main__':
