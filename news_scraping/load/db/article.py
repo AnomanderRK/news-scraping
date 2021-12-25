@@ -2,12 +2,18 @@
 import os
 
 from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy.sql import exists
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from news_scraping.output import create_output_folder
+
+
+def record_exists(session, column, value) -> bool:
+    """Whether value exists in session column"""
+    return session.query(exists().where(column == value)).scalar()
 
 
 class DataBaseConnection:

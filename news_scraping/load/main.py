@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from news_scraping.load.utils import read_news_from_pickles
 from news_scraping.news import NewsList
-from news_scraping.load.db.article import DataBaseConnection, Article
+from news_scraping.load.db.article import DataBaseConnection, Article, record_exists
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,6 +29,9 @@ def run(input_path: str) -> None:
     # save data to database
     with conn.Session.begin() as session:
         for art in news_list.get_news():
+            if record_exists(session, Article.uid, art.uid):
+                logger.info(f'Duplicated id: {art.uid}. Ignore')
+                continue
             logger.info(f'Loading article uid {art.uid} into DB')
             article = Article(**dataclasses.asdict(art))
             try:
