@@ -2,6 +2,8 @@
 
 import argparse
 import logging
+import asyncio
+
 from typing import Dict
 import news_scraping.extract.main as extract
 import news_scraping.transform.main as transform
@@ -9,7 +11,7 @@ import news_scraping.load.main as load
 
 from news_scraping.common import Config, Site
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename="news_pipeline.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +21,7 @@ def run(config: Config):
     o_folder: str = config.output_folder
 
     # Run all the steps
-    extract.run(sites, output_folder=o_folder)
+    asyncio.run(extract.run(sites, output_folder=o_folder))
     transform.run(o_folder)
     load.run(o_folder)
     logger.info('Finished with processing')

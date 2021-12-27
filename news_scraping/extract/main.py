@@ -7,6 +7,7 @@ Get the news for today from different news sites and save them into [today] fold
 """
 import argparse
 import logging
+import asyncio
 
 from typing import List, Dict
 
@@ -18,12 +19,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def run(sites: Dict[str, Site], output_folder: str):
+async def run(sites: Dict[str, Site], output_folder: str):
     """Get the news for today and save them into [today] folder as different txt files"""
     # get news for all the different folders
     for site_name, site in sites.items():
-        site.parser(site)     # type: ignore
-        site_news: List[News] = site.parser.parse_news()
+        await site.parser(site)     # type: ignore
+        site_news: List[News] = await site.parser.parse_news()
         # save news in specific folder
         valid_output_folder: str = create_output_folder_from_site(output_folder, site_name)
         # save_news_to_txt(site_news, output_folder)
@@ -42,4 +43,4 @@ if __name__ == '__main__':
     o_folder: str = cfg.output_folder
     logger.info(f'Beginning scraper for: {sites_}')
     logger.info(f'Output folder: {o_folder}')
-    run(sites_, o_folder)
+    asyncio.run(run(sites_, o_folder))

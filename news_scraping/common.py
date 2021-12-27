@@ -21,7 +21,7 @@ class SiteHint(TypedDict):
 Sites = Dict[str, Union[str, Dict[str, SiteHint]]]
 
 
-def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
+async def select_query(query: str, target: bs4.BeautifulSoup) -> bs4.ResultSet:
     """Apply query to target site and return matches"""
     return target.select(query)
 
