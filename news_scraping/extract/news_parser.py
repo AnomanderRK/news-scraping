@@ -3,6 +3,8 @@ from __future__ import annotations      # resolve circular dependency with hints
 
 import requests
 import aiohttp
+import certifi
+import ssl
 
 import bs4
 import logging
@@ -36,6 +38,11 @@ class NewsParser(ABC):
     def news(self) -> NewsList:
         """Get the Site object used"""
 
+    @property
+    @abstractmethod
+    def news_home(self) -> List[str]:
+        """Get the Site object used"""
+
     async def get_news_details(self, news_page: bs4.BeautifulSoup, news_url: str) -> News:
         """Get the details from news page and return a News object"""
         title, summary, body = await asyncio.gather(
@@ -64,6 +71,27 @@ class NewsParser(ABC):
             body_text.append(result.text.strip())
         return '\n'.join(body_text)
 
+    def _get_session_tasks(self, session: aiohttp.ClientSession) -> List[Awaitable]:
+        """Get a list of http requests"""
+        tasks: List[Awaitable] = list()
+        for i, news_url in enumerate(self.news_home):
+            tasks.append(asyncio.create_task(self._async_http_requests(session, news_url, i)))
+        return tasks
+
+    async def _async_http_requests(self, session: aiohttp.ClientSession, news_url: str,
+                                   index: int) -> None:
+        """Parse data asynchronously """
+        logger.info(f'(task {index} / {len(self.news_home) - 1}) - Parsing data from: {news_url} ...')
+        async with session.get(news_url, ssl=False) as response:
+            if not response.status == 200:
+                logger.warning(f'--- task: {index} Failed to parse!')
+            else:
+                logger.info(f'--- task: {index}: SUCCESS!')
+                text = await response.read()
+                news_page = bs4.BeautifulSoup(text.decode('utf-8'), 'html.parser')
+                news_details: News = await self.get_news_details(news_page, news_url)
+                self.news.append(news_details)
+
 
 class ElUniversalParser(NewsParser):
     """Read news from el universal news"""
@@ -81,6 +109,10 @@ class ElUniversalParser(NewsParser):
     @property
     def news(self) -> NewsList:
         return self._news
+
+    @property
+    def news_home(self) -> List[str]:
+        return self._news_home
 
     @property
     def site(self) -> common.Site:
@@ -105,31 +137,11 @@ class ElUniversalParser(NewsParser):
         logger.info(f'Getting news from: {self._site.url}')
         return await self._get_news_from_home(home)
 
-    def _get_session_tasks(self, session: aiohttp.ClientSession) -> List[Awaitable]:
-        """Get a list of http requests"""
-        tasks: List[Awaitable] = list()
-        for i, news_url in enumerate(self._news_home):
-            tasks.append(self._async_http_requests(session, news_url, i))
-        return tasks
-
-    async def _async_http_requests(self, session: aiohttp.ClientSession, news_url: str,
-                                   index: int) -> Tuple[aiohttp.ClientResponse, int]:
-        """Parse data asynchronously """
-        logger.info(f'(task {index} / {len(self._news_home)}) - Parsing data from: {news_url} ...')
-        async with session.get(news_url, ssl=False) as response:
-            if not response.status == 200:
-                logger.warning(f'--- task: {index} Failed to parse!')
-            else:
-                logger.info(f'--- task: {index}: SUCCESS!')
-                text = await response.read()
-                news_page = bs4.BeautifulSoup(text.decode('utf-8'), 'html.parser')
-                news_details: News = await self.get_news_details(news_page, news_url)
-                self._news.append(news_details)
-            return response, response.status
-
     async def parse_news(self) -> List[News]:
         """Get news from home return a list of News objects"""
-        async with aiohttp.ClientSession(trust_env=True) as session:
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        conn = aiohttp.TCPConnector(ssl=ssl_context)
+        async with aiohttp.ClientSession(connector=conn, trust_env=True) as session:
             tasks = self._get_session_tasks(session)
             await asyncio.gather(*tasks)
 
