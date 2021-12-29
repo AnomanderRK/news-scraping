@@ -9,8 +9,4 @@ news_sites:
       news_title: '.title '
       news_summary: '.sum '
       news_body: '.note-text '
-#  elpais:
-#    parser: ElPaisParser
-#    url: https://www.elpais.com/mexico
-#    queries:
-#      hompage_article_links: '.c_t'
+# TODO: El pais
