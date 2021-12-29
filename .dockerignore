@@ -5,7 +5,10 @@
 *egg-info/
 *__pycache__/
 *.coverage
-*.db
-*.pkl
+.gitignore
+/output/
+/output_docker
+/tests
+*.md
 *.log
-/docker_output
+.github

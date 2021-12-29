@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  test-scraping:
+    build: .
+#    command: tail -F /dev/null   # debug environment
+    volumes:
+    - ./output_docker:/usr/src/output
