@@ -26,5 +26,4 @@ def tokenize_column(news_df: pd.DataFrame, column_name: str) -> pd.Series:
     except Exception as e:
         logger.error(e)
         s: pd.Series = pd.Series(len(news_df))
-    print(s)
     return s
