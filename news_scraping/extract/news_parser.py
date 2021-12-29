@@ -11,7 +11,7 @@ import logging
 import asyncio
 
 from abc import ABC, abstractmethod
-from typing import List, Set, Any, Awaitable, Tuple
+from typing import List, Set, Awaitable
 
 from news_scraping.news import News, NewsList
 from news_scraping import common

@@ -1,6 +1,5 @@
 """Add data to news dataframe"""
 import pandas as pd
-import numpy as np
 from nltk.corpus import stopwords
 import nltk
 import logging
