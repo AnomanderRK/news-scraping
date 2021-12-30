@@ -2,8 +2,7 @@
 
 [![Tests](https://github.com/AnomanderRK/newsscraping/actions/workflows/tests.yml/badge.svg)](https://github.com/AnomanderRK/newsscraping/actions/workflows/tests.yml)
 
-web scrapping from 'El Universal'. It retrieves the latest news from the site and store them into a new folder 
-in your working directory
+web scraping for different news sites. It retrieves the latest news from the site and stores them in a new folder in your working directory
 
 ## Output
 - First stage output (Extract) -> csv: Each day will be stored in a new .csv, in a separated folder with the following structure: output/
