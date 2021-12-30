@@ -10,18 +10,21 @@ import bs4
 import logging
 import asyncio
 
+from asyncio import Task
 from abc import ABC, abstractmethod
-from typing import List, Set, Awaitable
+from typing import List, Set, Callable, Awaitable, Any
 
 from news_scraping.news import News, NewsList
 from news_scraping import common
 
 logger = logging.getLogger(__name__)
 
+SessionTask = List[Callable[[aiohttp.ClientSession, str, int], Awaitable[None]]]
+
 
 class NewsParser(ABC):
     @abstractmethod
-    def parse_home(self) -> List[str]:
+    async def parse_home(self) -> List[str]:
         """Get list of news from home"""
 
     @abstractmethod
@@ -71,9 +74,9 @@ class NewsParser(ABC):
             body_text.append(result.text.strip())
         return '\n'.join(body_text)
 
-    def _get_session_tasks(self, session: aiohttp.ClientSession) -> List[Awaitable]:
+    def _get_session_tasks(self, session: aiohttp.ClientSession) -> List[Task[Any]]:
         """Get a list of http requests"""
-        tasks: List[Awaitable] = list()
+        tasks: List[Task[Any]] = list()
         for i, news_url in enumerate(self.news_home):
             tasks.append(asyncio.create_task(self._async_http_requests(session, news_url, i)))
         return tasks

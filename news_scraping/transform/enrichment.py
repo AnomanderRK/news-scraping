@@ -25,5 +25,5 @@ def tokenize_column(news_df: pd.DataFrame, column_name: str) -> pd.Series:
                         .apply(lambda valid_word_list: len(valid_word_list)))
     except Exception as e:
         logger.error(e)
-        s: pd.Series = pd.Series(len(news_df))
+        s = pd.Series(len(news_df))
     return s

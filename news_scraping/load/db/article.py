@@ -13,7 +13,7 @@ from news_scraping.output import create_output_folder
 
 def record_exists(session, column, value) -> bool:
     """Whether value exists in session column"""
-    return session.query(exists().where(column == value)).scalar()
+    return bool(session.query(exists().where(column == value)).scalar())
 
 
 class DataBaseConnection:
